@@ -1,0 +1,67 @@
+
+
+ -- input query
+INSERT INTO rent_transaction (booking_code, start_time, end_time, guest_id, price)
+VALUES (
+  substring(md5(random()::text), 1, 8),              -- booking_code
+  '2025-06-18 09:30:00',              			         -- start_date
+  '2025-06-19 09:30:00',                		         -- end_time
+  7,                                                 -- guest_id
+  50000                                              -- price
+);
+
+
+--query list sepeda yang available
+SELECT bike.id, bike.name
+FROM bike
+LEFT JOIN rent_transaction_detail
+  ON bike.id = rent_transaction_detail.bike_id
+WHERE rent_transaction_detail.bike_id IS NULL or rent_transaction_detail.status = 'finished';
+
+--query list sepeda yang jalan
+select 
+bike.id as bike_id,
+bike.name as nama_sepeda,
+rent_transaction.start_time,
+rent_transaction.end_time,
+guest.name,
+rent_transaction.price,
+case 
+	when rent_transaction_detail.status = 'ongoing' and rent_transaction.end_time < now()
+	then 'waktu habis dan belum dikembalikan'
+	else 'belum lewat'
+end as status_label
+from bike
+join rent_transaction_detail on bike.id = rent_transaction_detail.bike_id
+join rent_transaction on rent_transaction_detail.rent_transaction_id = rent_transaction.id
+join guest on rent_transaction.guest_id = guest.id
+where rent_transaction_detail.status = 'ongoing'
+
+--query list semua
+select guest.name,
+rent_transaction.start_time,
+rent_transaction.end_time,
+guest.phone_number,
+rent_transaction.price,
+ARRAY_AGG(bike.name) AS bikes,
+case 
+	when rent_transaction_detail.status = 'ongoing' and rent_transaction.end_time < now()
+		then 'waktu habis dan belum dikembalikan'
+	when rent_transaction_detail.status = 'ongoing' and rent_transaction.end_time > now()
+		then 'masih disewa'
+	else 'selesai'
+end as status	
+
+from rent_transaction
+join guest
+on guest.id = rent_transaction.id
+join rent_transaction_detail
+on rent_transaction_detail.rent_transaction_id = rent_transaction.id
+join bike 
+on bike.id = rent_transaction_detail.bike_id
+group by guest.name,
+rent_transaction.start_time,
+rent_transaction.end_time,
+guest.phone_number,
+rent_transaction.price,
+rent_transaction_detail.status
