@@ -4,8 +4,8 @@
 INSERT INTO rent_transaction (booking_code, start_time, end_time, guest_id, price)
 VALUES (
   substring(md5(random()::text), 1, 8),              -- booking_code
-  '2025-06-18 09:30:00',              			         -- start_date
-  '2025-06-19 09:30:00',                		         -- end_time
+  '2025-06-18 09:30:00',              			     -- start_date
+  '2025-06-19 09:30:00',                		     -- end_time
   7,                                                 -- guest_id
   50000                                              -- price
 );
