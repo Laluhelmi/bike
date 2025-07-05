@@ -13,7 +13,7 @@ const getRunningBike = async () => {
         case 
             when rent_transaction_detail.status = 'ongoing' and rent_transaction.end_time < now()
             then 'waktu habis dan belum dikembalikan'
-            else 'belum lewat'
+            else 'masih disewa'
         end as status_label
         from bike
         join rent_transaction_detail on bike.id = rent_transaction_detail.bike_id
