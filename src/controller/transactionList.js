@@ -2,7 +2,7 @@ const pool = require('../db');
 
 const getAllTransactions = async () => {
   const result = await pool.query(`
-  SELECT guest.name,
+   SELECT guest.name,
          rent_transaction.id as transaction_id,
          rent_transaction.booking_code,
          rent_transaction.start_time,
@@ -28,6 +28,7 @@ const getAllTransactions = async () => {
            rent_transaction.start_time,
            rent_transaction.end_time,
            guest.phone_number,
+		   guest.address,
            rent_transaction.price,
            rent_transaction_detail.status
     order by rent_transaction.end_time asc
