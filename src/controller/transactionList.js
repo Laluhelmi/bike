@@ -8,6 +8,7 @@ const getAllTransactions = async () => {
          rent_transaction.start_time,
          rent_transaction.end_time,
          guest.phone_number,
+         guest.address,
          rent_transaction.price,
          ARRAY_AGG(bike.name) AS bikes,
          CASE 
