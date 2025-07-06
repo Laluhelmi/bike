@@ -20,6 +20,7 @@ const getRunningBike = async () => {
         join rent_transaction on rent_transaction_detail.rent_transaction_id = rent_transaction.id
         join guest on rent_transaction.guest_id = guest.id
         where rent_transaction_detail.status    = 'ongoing'
+		order by status_label desc
 `);
 
   return result.rows;
