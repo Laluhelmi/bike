@@ -6,8 +6,7 @@ const pool = new Pool({
   host        : 'shortline.proxy.rlwy.net',
   database    : 'railway',
   password    : 'llYfYGSjwRjXlvNWMVHJTNOdMhgSxoNM',
-  port        : '57235',
-//   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  port        : '57235'
 });
 
 module.exports = pool;
