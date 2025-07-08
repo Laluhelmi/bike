@@ -10,14 +10,13 @@ const getAllTransactions = async () => {
          guest.phone_number,
          guest.address,
          rent_transaction.price,
-         ARRAY_AGG(bike.name) AS bikes,
-         CASE 
-           WHEN rent_transaction_detail.status = 'ongoing' AND rent_transaction.end_time < NOW()
-             THEN 'waktu habis dan belum dikembalikan'
-           WHEN rent_transaction_detail.status = 'ongoing' AND rent_transaction.end_time > NOW()
-             THEN 'masih disewa'
-           ELSE 'selesai'
-         END AS status
+         jsonb_agg(
+            jsonb_build_object(
+              'id'    , bike.id,
+              'name'  , bike.name,
+              'status',rent_transaction_detail.status
+            )
+          ) AS bikes
     FROM rent_transaction
     JOIN guest ON guest.id = rent_transaction.guest_id
     JOIN rent_transaction_detail ON rent_transaction_detail.rent_transaction_id = rent_transaction.id
@@ -28,9 +27,8 @@ const getAllTransactions = async () => {
            rent_transaction.start_time,
            rent_transaction.end_time,
            guest.phone_number,
-		   guest.address,
-           rent_transaction.price,
-           rent_transaction_detail.status
+		       guest.address,
+           rent_transaction.price
     order by rent_transaction.end_time asc
 `);
 
