@@ -16,8 +16,8 @@ const getAllTransactions = async () => {
               'name'  , bike.name,
               'status',
                CASE 
-                WHEN rent_transaction_detail.status = 'finished' THEN 'Sudah Dikembalikan'
-                ELSE 'Masih Disewa'
+                WHEN rent_transaction_detail.status = 'finished' THEN 'sudah dikembalikan'
+                ELSE 'masih disewa'
               END
             )
           ) AS bikes
