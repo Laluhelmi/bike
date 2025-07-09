@@ -14,7 +14,11 @@ const getAllTransactions = async () => {
             jsonb_build_object(
               'id'    , bike.id,
               'name'  , bike.name,
-              'status',rent_transaction_detail.status
+              'status',
+               CASE 
+                WHEN rent_transaction_detail.status = 'finished' THEN 'Sudah Dikembalikan'
+                ELSE 'Masih Disewa'
+              END
             )
           ) AS bikes
     FROM rent_transaction
