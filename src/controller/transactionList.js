@@ -18,6 +18,10 @@ const getAllTransactions = async () => {
                CASE 
 			    WHEN rent_transaction_detail.status = 'ongoing' and rent_transaction.end_time < now()
 				THEN 'waktu habis dan belum dikembalikan'
+				
+				WHEN rent_transaction_detail.status = 'finished' 
+				THEN 'Sudah dikembalikan'
+
 				ELSE 'masih disewa'
               END
             )
