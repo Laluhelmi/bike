@@ -38,7 +38,7 @@ const getAllTransactions = async () => {
            guest.phone_number,
 		       guest.address,
            rent_transaction.price
-    order by rent_transaction.end_time asc
+    order by rent_transaction.end_time desc
 `);
 
   const totalPrices = await pool.query(`
