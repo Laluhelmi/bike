@@ -1,6 +1,6 @@
 const { getAllTransactions }                          = require('./controller/transactionList');
 const { getRunningBike, getAvailableBikes }           = require('./controller/bikes');
-const { insertTransaction, changeTransactionStatus }  = require('./controller/transaction');
+const { insertTransaction, changeTransactionStatus, extendTransactions }  = require('./controller/transaction');
 const { getAllGuests }                                = require('./controller/guest');
 
 const routes = [
@@ -38,6 +38,11 @@ const routes = [
     method        : 'PUT',
     path          : '/finish-transaction',
     handler       : changeTransactionStatus,
+  },
+  {
+    method        : 'POST',
+    path          : '/extend-transaction',
+    handler       : extendTransactions,
   },
 ];
 

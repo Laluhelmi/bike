@@ -19,9 +19,9 @@ const insertTransaction = async (req) => {
     [startTime, endTime, guestId, price]);
 
   const transactionId = transactionQuery.rows[0].id;
-  const values        = [];
-  const placeholders  = bikeIds.map((value, i) => {
-    const idx  = (i * 2) + 1;
+  const values = [];
+  const placeholders = bikeIds.map((value, i) => {
+    const idx = (i * 2) + 1;
     const idx2 = idx + 1;
     values.push(value, transactionId);
     return `($${idx}, $${idx2})`;
@@ -32,7 +32,7 @@ const insertTransaction = async (req) => {
      VALUES ${placeholders}
     `, values);
   return {
-    'result' : 'success'
+    'result': 'success'
   };
 };
 
@@ -55,11 +55,36 @@ const changeTransactionStatus = async (req) => {
   );
 
   return {
-    'result' : 'success'
+    'result': 'success'
+  };
+
+};
+
+const extendTransactions = async (req) => {
+
+  // const transactionId = req.payload.transactionId;
+  const { transactionId, transactionDetailIds } = req.payload;
+
+  const getDetailIds = await pool.query(
+    'SELECT id from rent_transaction_detail where rent_transaction_detail.rent_transaction_id = $1',
+    [transactionId]
+  );
+
+  const allIds = getDetailIds.rows.map((row) => row.id);
+  const arr    = allIds.filter((id) => !transactionDetailIds.includes(id));
+
+  await pool.query(
+    `UPDATE rent_transaction_detail
+   SET status = 'finished'
+   WHERE id   = ANY($1)`,
+    [arr]
+  );
+  return {
+    'result': 'success',
   };
 
 };
 
 
 
-module.exports = { insertTransaction, changeTransactionStatus };
+module.exports = { insertTransaction, changeTransactionStatus, extendTransactions };

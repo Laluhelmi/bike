@@ -2,7 +2,7 @@ const pool = require('../db');
 
 const getAllTransactions = async () => {
   const result = await pool.query(`
-   SELECT   guest.name,
+   SELECT guest.name,
          rent_transaction.id as transaction_id,
          rent_transaction.booking_code,
          rent_transaction.start_time,
@@ -16,13 +16,13 @@ const getAllTransactions = async () => {
               'name'  , bike.name,
               'status',
                CASE 
-			    WHEN rent_transaction_detail.status = 'ongoing' and rent_transaction.end_time < now()
-				THEN 'waktu habis dan belum dikembalikan'
-				
-				WHEN rent_transaction_detail.status = 'finished' 
-				THEN 'Sudah dikembalikan'
+			            WHEN rent_transaction_detail.status = 'ongoing' and rent_transaction.end_time < now()
+				          THEN 'waktu habis dan belum dikembalikan'
 
-				ELSE 'masih disewa'
+				          WHEN rent_transaction_detail.status = 'finished' 
+				          THEN 'Sudah dikembalikan'
+                  
+				          ELSE 'masih disewa'
               END
             )
           ) AS bikes
