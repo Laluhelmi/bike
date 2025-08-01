@@ -2,7 +2,7 @@ const pool = require('../db');
 
 const insertTransaction = async (req) => {
 
-  const { name, address, phoneNumber, price, startTime, endTime, bikeIds } = req.payload;
+  const { name, address, phoneNumber, price, duration, bikeIds } = req.payload;
 
   const guestQuery = await pool.query(
     'INSERT INTO guest (name, address, phone_number) VALUES ($1, $2, $3) RETURNING id',
@@ -12,16 +12,25 @@ const insertTransaction = async (req) => {
   const guestId = guestQuery.rows[0].id;
 
   const transactionQuery = await pool.query(
-    `INSERT INTO rent_transaction (booking_code, start_time, end_time, guest_id, price)
-     VALUES (substring(md5(random()::text), 1, 8), $1 , $2 ,$3 ,$4)
-     RETURNING id
-     `,
-    [startTime, endTime, guestId, price]);
+    `INSERT INTO rent_transaction 
+     (booking_code, start_time, end_time, guest_id, price)
+   VALUES 
+     (
+       substring(md5(random()::text), 1, 8),
+       NOW(),
+       NOW() + ($1 || ' days')::interval,
+       $2,
+       $3
+     )
+   RETURNING id
+  `,
+    [duration, guestId, price]
+  );
 
   const transactionId = transactionQuery.rows[0].id;
-  const values = [];
-  const placeholders = bikeIds.map((value, i) => {
-    const idx = (i * 2) + 1;
+  const values        = [];
+  const placeholders  = bikeIds.map((value, i) => {
+    const idx  = (i * 2) + 1;
     const idx2 = idx + 1;
     values.push(value, transactionId);
     return `($${idx}, $${idx2})`;
